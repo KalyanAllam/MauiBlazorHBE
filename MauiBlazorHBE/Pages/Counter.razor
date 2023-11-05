@@ -1,0 +1,162 @@
+﻿@page "/counter"
+
+<h1>BMI Index</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <p>Height (in cm)</p>
+    </div>
+    <div class="col-md-4">
+        <input placeholder="Height (in cm)" @bind="@height" />
+    </div>
+</div>
+<br />
+
+<div class="row">
+    <div class="col-md-3">
+        <p>Weight (in kgs)</p>
+    </div>
+    <div class="col-md-4">
+        <input placeholder="Weight (in kgs)" @bind="@weight" />
+    </div>
+</div>
+<br />
+
+<br />
+<div class="row">
+    <div class="col-md-3">
+        <p>Age</p>
+    </div>
+    <div class="col-md-4">
+        <input placeholder="Age" @bind="@age" />
+    </div>
+</div>
+
+<br />
+
+
+<div class="row">
+    <div class="col-md-2">
+        <button @onclick="AddNumbers" class="btn btn-light">Submit</button>
+    </div>
+
+</div>
+
+
+
+<br />
+
+<div class="row">
+    <div class="col-md-3">
+        <p>Result :</p>
+    </div>
+    <div class="col-md-4">
+        <input readonly @bind="@finalresult" />
+    </div>
+</div>
+<br />
+<div class="col-md-8">
+    <p>Ideal Weight Range in Kgs :</p>
+    <input readonly @bind="@weightrange" />
+</div>
+<p>This app shoudnt be used by pregnant women</p>
+
+@code {
+    private int height  ;
+    private int weight  ;
+    double h1;
+    double bmi;
+    int age;
+    int startweight;
+    int endweight;
+
+    string finalresult;
+    string weightrange;
+    string skip;
+    private void AddNumbers()
+    {
+
+
+        skip = "N";
+        if (weight <= 21)
+        {
+            skip = "Y";
+            finalresult = "Invalid Weight";
+        }
+        if (weight >= 150)
+        {
+            skip = "Y";
+
+            finalresult = "Invalid Weight";
+        }
+
+
+
+
+        if (height <= 51)
+        {
+            skip = "Y";
+            finalresult = "Invalid Height";
+        }
+        if (height >= 250)
+        {
+            skip = "Y";
+            finalresult = "Invalid Height";
+        }
+
+
+        if (age <= 18)
+        {
+            skip = "Y";
+            finalresult = "Invalid Age";
+        }
+        if (age >= 81)
+        {
+            skip = "Y";
+            finalresult = "Invalid Age";
+        }
+
+
+     
+        if (skip == "N")
+        {
+            h1 = Convert.ToDouble(height) / 100;
+            bmi = Math.Round(weight / (h1 * h1), 2);
+            finalresult = bmi.ToString();
+            if (bmi <= 18.5)
+            {
+
+                finalresult = "Underweight";
+            }
+
+
+            if (bmi >= 18.5 && bmi <= 24.5)
+            {
+
+                finalresult = "Normal Weight";
+            }
+
+
+            if (bmi >= 25.0 && bmi <= 29.9)
+            {
+
+                finalresult = "Overweight";
+            }
+            if (bmi >= 30.0)
+            {
+
+                finalresult = "Obese";
+            }
+
+            startweight = Convert.ToInt32((18.5) * (h1 * h1));
+            endweight = Convert.ToInt32((24.5) * (h1 * h1));
+
+            weightrange = startweight.ToString() + "  To " + endweight.ToString();
+        }
+
+
+     
+
+    
+    }
+}

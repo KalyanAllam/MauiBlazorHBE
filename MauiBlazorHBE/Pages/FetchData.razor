@@ -1,0 +1,129 @@
+﻿@page "/FetchData"
+@inject HttpClient Http
+@using Microsoft.AspNetCore.Components.Forms
+@using System.Net.Http.Json
+
+<PageTitle>Activity Dropdown</PageTitle>
+
+<h3>Activity</h3>
+
+<EditForm Model="@submitActivity" OnSubmit="@Submit">
+    <div>
+        <InputSelect @bind-Value="submitActivity.CD">
+            @if (submitActivity != null)
+            {
+                <option value="">--Select--</option>
+                @foreach (var activity in ActivityList)
+                {
+                    <option value="@activity.CD">@activity.DESC</option>
+                }
+            }
+        </InputSelect>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Weight (in kgs)</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Weight (in kgs)" @bind="@weight" />
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Time  (in minutes)</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Time in minutes" @bind="@minutes" />
+        </div>
+    </div>
+    <div>
+        <button type="submit">Submit</button>
+    </div>
+</EditForm>
+
+<div>
+    <div>@finalresult</div>
+</div>
+
+@code {
+    private List<ACTIVITY> ActivityList = new();
+    private ACTIVITY submitActivity { get; set; } = new();
+
+    private int weight;
+    private int minutes;
+    private string finalresult = string.Empty;
+    private decimal hours;
+    private string skip = "";
+    protected override async Task OnInitializedAsync()
+    {
+        //Get the data from the employees.txt
+        var root = await Http.GetFromJsonAsync<Rootobject>("sample-data/employees.txt");
+        ActivityList = root.burned.ACTIVITY;
+    }
+
+
+
+
+
+    private void Submit()
+    {
+        //Debug - View the CD
+
+        skip = "N";
+        if (weight <= 21)
+        {
+            skip = "Y";
+            finalresult = "Invalid Weight";
+        }
+        if (weight >= 150)
+        {
+            skip = "Y";
+
+            finalresult = "Invalid Weight";
+        }
+        if (minutes <= 5)
+        {
+            skip = "Y";
+
+            finalresult = "Invalid Time";
+        }
+
+        if (minutes >= 200)
+        {
+            skip = "Y";
+
+            finalresult = "Invalid Time";
+        }
+        //use the CD to get the and display the description
+        ACTIVITY model = ActivityList.FirstOrDefault(a => a.CD == submitActivity.CD);
+
+        hours = (decimal)minutes / 60;
+        if (skip == "N")
+        { finalresult = (weight * model.METS * hours).ToString(); }
+
+
+    }
+
+
+    //View Model
+    public class Rootobject
+    {
+        public Burned burned { get; set; }
+    }
+
+    public class Burned
+    {
+        public List<ACTIVITY> ACTIVITY { get; set; }
+    }
+
+    public class ACTIVITY
+    {
+        public string CD { get; set; }
+        public decimal METS { get; set; }
+        public string CATEGORY { get; set; }
+        public string DESC { get; set; }
+    }
+}

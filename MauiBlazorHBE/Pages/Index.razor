@@ -1,0 +1,213 @@
+﻿@page "/"
+
+<h1>Harris and Benedicts Equation</h1>
+<hr />
+<div>
+    <div class="row">
+        <div class="col-md-3">
+            <p>Height (in cm)</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Height (in cm)" @bind="@height" />
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Age</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Age" @bind="@age" />
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Weight (in kgs)</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Weight (in kgs)" @bind="@weight" />
+        </div>
+    </div>
+   
+    <br />
+    <div class="form-group">
+        <label>Gender:</label>
+        <select class="form-control" @onchange="Option">
+            <option>Male</option>
+            <option>Female</option>
+
+        </select>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Consumed Calories</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Consumed Calories" @bind="@concals" />
+        </div>
+    </div>
+
+
+    <br />
+    <div class="row">
+        <div class="col-md-3">
+            <p>Burned Calories</p>
+        </div>
+        <div class="col-md-4">
+            <input placeholder="Burned  Calories" @bind="@burncals" />
+        </div>
+    </div>
+    
+    <br />
+        <div class="row">
+        <div class="col-md-2">
+            <button @onclick="AddNumbers" class="btn btn-light">Submit</button>
+        </div>
+
+    </div>
+
+    <br />
+
+    <div class="row">
+        <div class="col-md-3">
+            <p>Approximately you :</p>
+        </div>
+        <div class="col-md-4">
+            <input readonly @bind="@lossorgain" />
+        </div>
+    </div>
+
+
+    <br />
+
+    <div class="row">
+        <div class="col-md-3">
+            <p>Result(Calories needed to maintain weight):</p>
+        </div>
+        <div class="col-md-4">
+            <input readonly @bind="@finalresult" />
+        </div>
+    </div>
+     <br />
+      <p>This app shoudnt be used by pregnant women</p>
+</div>
+
+@code {
+    int height;
+    int age;
+    int weight;
+    int result;
+    string finalresult;
+    string skip;
+    int concals;
+    int burncals;
+    int netcals;
+    public string MyOption { get; set; }
+    public string lossorgain { get; set; }
+    private void Option(ChangeEventArgs e)
+    {
+        MyOption = e.Value as string;
+    }
+
+    void AddNumbers()
+    {
+
+        skip = "N";
+        if (weight <= 21)
+        {
+            skip = "Y";
+            finalresult = "Invalid Weight";
+        }
+        if (weight >= 150)
+        {
+            skip = "Y";
+
+            finalresult = "Invalid Weight";
+        }
+
+
+
+
+        if (height <= 51)
+        {
+            skip = "Y";
+            finalresult = "Invalid Height";
+        }
+        if (height >= 250)
+        {
+            skip = "Y";
+            finalresult = "Invalid Height";
+        }
+
+
+
+
+        if (age <= 18)
+        {
+            skip = "Y";
+            finalresult = "Invalid Age";
+        }
+        if (age >= 81)
+        {
+            skip = "Y";
+            finalresult = "Invalid Age";
+        }
+
+
+        if(concals <500)
+        {
+            skip = "Y";
+            finalresult = "Consumed Calories out of range";
+        }
+
+        if (concals > 3000)
+        {
+            skip = "Y";
+            finalresult = "Consumed Calories out of range";
+        }
+
+
+        if (burncals > 3000)
+        {
+            skip = "Y";
+            finalresult = "Burned Calories out of range";
+        }
+
+
+        if (skip == "N")
+
+        {
+            if (MyOption == "Female")
+            {
+                result = Convert.ToInt32(655.0955 + (9.740 * weight) + (1.8496 * height) - (4.6756 * age));
+
+            }
+            else
+            { result = Convert.ToInt32(66.475 + (13.75 * weight) + (5.003 * height) - (6.775 * age)); }
+            finalresult = (result).ToString();
+
+            netcals = concals - burncals - result;
+            lossorgain = "";
+            if(netcals<0)
+            { lossorgain = "Lost  " + (netcals * -1 / 7).ToString() + " grams" ; }
+
+            if (netcals > 0)
+            { lossorgain = "Gained   " + (netcals / 7).ToString() + " grams"; }
+
+
+
+
+        
+
+             
+
+        }
+    }
+
+
+
+}
